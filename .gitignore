@@ -1,0 +1,29 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Build output
+/build/
+/assets/js/admin/build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# WordPress env
+.wp-env.override.json
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+
+# Composer
+composer.lock
+
+/.claude
