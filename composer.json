@@ -22,7 +22,11 @@
   "scripts": {
     "test": "phpunit",
     "test:unit": "phpunit --testsuite=unit",
-    "test:integration": "phpunit --testsuite=integration"
+    "test:integration": "phpunit --testsuite=integration",
+    "gemogen:list": "wp gemogen list",
+    "gemogen:run": "wp gemogen run",
+    "gemogen:info": "wp gemogen info",
+    "gemogen:rollback": "wp gemogen rollback"
   },
   "config": {
     "sort-packages": true,

@@ -123,6 +123,11 @@ class Plugin {
 	 */
 	private function register_hooks(): void {
 		add_action( 'init', fn() => $this->container->get( 'scenario.manager' )->discover() );
+
+		// Register WP-CLI commands.
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			\WP_CLI::add_command( 'gemogen', CLI\ScenarioCommand::class );
+		}
 	}
 
 	/**
