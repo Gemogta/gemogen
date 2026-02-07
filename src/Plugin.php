@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gemogen;
 
+use Gemogen\Core\ContentPool;
 use Gemogen\Core\Logger;
 use Gemogen\Core\ScenarioManager;
 use Gemogen\Generators\CommentGenerator;
@@ -12,6 +13,8 @@ use Gemogen\Generators\PostGenerator;
 use Gemogen\Generators\TaxonomyGenerator;
 use Gemogen\Generators\UserGenerator;
 use Gemogen\Scenarios\CoreContentScenario;
+use Gemogen\Sources\BuiltInSource;
+use Gemogen\Sources\UserTemplateSource;
 
 /**
  * Main plugin class — handles boot sequence and service wiring.
@@ -62,10 +65,35 @@ class Plugin {
 	private function register_services(): void {
 		$this->container->set( 'logger', fn() => new Logger() );
 
-		$this->container->set( 'generator.post', fn() => new PostGenerator() );
-		$this->container->set( 'generator.user', fn() => new UserGenerator() );
-		$this->container->set( 'generator.taxonomy', fn() => new TaxonomyGenerator() );
-		$this->container->set( 'generator.comment', fn() => new CommentGenerator() );
+		// Content sources and pool.
+		$this->container->set( 'source.builtin', fn() => new BuiltInSource() );
+		$this->container->set( 'source.user_template', fn() => new UserTemplateSource() );
+
+		$this->container->set(
+			'content.pool',
+			function ( Container $c ): ContentPool {
+				$pool = new ContentPool();
+				$pool->addSource( $c->get( 'source.builtin' ) );
+				$pool->addSource( $c->get( 'source.user_template' ) );
+
+				/**
+				 * Allows adding custom content sources to the pool.
+				 *
+				 * @param ContentPool $pool The content pool to add sources to.
+				 */
+				if ( function_exists( 'do_action' ) ) {
+					do_action( 'gemogen_content_sources', $pool );
+				}
+
+				return $pool;
+			}
+		);
+
+		// Generators (all receive the ContentPool).
+		$this->container->set( 'generator.post', fn( Container $c ) => new PostGenerator( $c->get( 'content.pool' ) ) );
+		$this->container->set( 'generator.user', fn( Container $c ) => new UserGenerator( $c->get( 'content.pool' ) ) );
+		$this->container->set( 'generator.taxonomy', fn( Container $c ) => new TaxonomyGenerator( $c->get( 'content.pool' ) ) );
+		$this->container->set( 'generator.comment', fn( Container $c ) => new CommentGenerator( $c->get( 'content.pool' ) ) );
 		$this->container->set( 'generator.media', fn() => new MediaGenerator() );
 
 		$this->container->set(

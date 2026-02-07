@@ -5,25 +5,20 @@ declare(strict_types=1);
 namespace Gemogen\Generators;
 
 use Gemogen\Contracts\GeneratorInterface;
+use Gemogen\Core\ContentPool;
 
 class UserGenerator implements GeneratorInterface {
 
-	private const FIRST_NAMES = [
-		'Alice', 'Bob', 'Charlie', 'Diana', 'Edward',
-		'Fiona', 'George', 'Helen', 'Ivan', 'Julia',
-		'Kevin', 'Laura', 'Mike', 'Nina', 'Oscar',
-	];
+	private ContentPool $pool;
 
-	private const LAST_NAMES = [
-		'Smith', 'Johnson', 'Williams', 'Brown', 'Jones',
-		'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-		'Anderson', 'Taylor', 'Thomas', 'Moore', 'Jackson',
-	];
+	public function __construct( ContentPool $pool ) {
+		$this->pool = $pool;
+	}
 
 	public function generate( array $params = [] ): int {
 		$role  = $params['role'] ?? 'subscriber';
-		$first = self::FIRST_NAMES[ array_rand( self::FIRST_NAMES ) ];
-		$last  = self::LAST_NAMES[ array_rand( self::LAST_NAMES ) ];
+		$first = $this->pool->getField( 'first_name' ) ?? 'User';
+		$last  = $this->pool->getField( 'last_name' ) ?? 'Test';
 		$uid   = wp_rand( 1000, 99999 );
 
 		$username = strtolower( $first . '.' . $last . $uid );

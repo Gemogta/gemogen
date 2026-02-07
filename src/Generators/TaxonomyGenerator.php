@@ -5,28 +5,22 @@ declare(strict_types=1);
 namespace Gemogen\Generators;
 
 use Gemogen\Contracts\GeneratorInterface;
+use Gemogen\Core\ContentPool;
 
 class TaxonomyGenerator implements GeneratorInterface {
 
-	private const CATEGORY_NAMES = [
-		'Technology', 'Business', 'Health', 'Science', 'Sports',
-		'Education', 'Entertainment', 'Travel', 'Food', 'Lifestyle',
-		'Finance', 'Design', 'Marketing', 'Development', 'Culture',
-	];
+	private ContentPool $pool;
 
-	private const TAG_NAMES = [
-		'wordpress', 'php', 'javascript', 'react', 'tutorial',
-		'guide', 'tips', 'best-practices', 'performance', 'security',
-		'development', 'design', 'ux', 'api', 'testing',
-		'automation', 'workflow', 'tools', 'plugins', 'themes',
-	];
+	public function __construct( ContentPool $pool ) {
+		$this->pool = $pool;
+	}
 
 	public function generate( array $params = [] ): int {
 		$taxonomy = $params['taxonomy'] ?? 'category';
 		$parent   = $params['parent'] ?? 0;
 
-		$names = $taxonomy === 'post_tag' ? self::TAG_NAMES : self::CATEGORY_NAMES;
-		$name  = $params['name'] ?? $names[ array_rand( $names ) ];
+		$field = $taxonomy === 'post_tag' ? 'tag_name' : 'category_name';
+		$name  = $params['name'] ?? $this->pool->getField( $field ) ?? 'Term';
 		$name  = $name . ' ' . wp_rand( 100, 9999 );
 
 		$result = wp_insert_term(
