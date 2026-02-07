@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace Gemogen;
 
+use Gemogen\Core\Logger;
+use Gemogen\Core\ScenarioManager;
+use Gemogen\Generators\CommentGenerator;
+use Gemogen\Generators\MediaGenerator;
+use Gemogen\Generators\PostGenerator;
+use Gemogen\Generators\TaxonomyGenerator;
+use Gemogen\Generators\UserGenerator;
+use Gemogen\Scenarios\CoreContentScenario;
+
 /**
  * Main plugin class — handles boot sequence and service wiring.
  */
@@ -51,14 +60,41 @@ class Plugin {
 	 * Register services into the container.
 	 */
 	private function register_services(): void {
-		// Services will be registered here in Milestone 1+.
+		$this->container->set( 'logger', fn() => new Logger() );
+
+		$this->container->set( 'generator.post', fn() => new PostGenerator() );
+		$this->container->set( 'generator.user', fn() => new UserGenerator() );
+		$this->container->set( 'generator.taxonomy', fn() => new TaxonomyGenerator() );
+		$this->container->set( 'generator.comment', fn() => new CommentGenerator() );
+		$this->container->set( 'generator.media', fn() => new MediaGenerator() );
+
+		$this->container->set(
+			'scenario.core-content',
+			fn( Container $c ) => new CoreContentScenario(
+				$c->get( 'logger' ),
+				$c->get( 'generator.post' ),
+				$c->get( 'generator.user' ),
+				$c->get( 'generator.taxonomy' ),
+				$c->get( 'generator.comment' ),
+				$c->get( 'generator.media' ),
+			)
+		);
+
+		$this->container->set(
+			'scenario.manager',
+			function ( Container $c ): ScenarioManager {
+				$manager = new ScenarioManager( $c->get( 'logger' ) );
+				$manager->register( $c->get( 'scenario.core-content' ) );
+				return $manager;
+			}
+		);
 	}
 
 	/**
 	 * Register WordPress hooks.
 	 */
 	private function register_hooks(): void {
-		// Hooks will be registered here in Milestone 1+.
+		add_action( 'init', fn() => $this->container->get( 'scenario.manager' )->discover() );
 	}
 
 	/**
