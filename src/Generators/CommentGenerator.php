@@ -39,6 +39,8 @@ class CommentGenerator implements GeneratorInterface {
 			throw new \RuntimeException( 'Failed to create comment.' );
 		}
 
+		update_comment_meta( (int) $comment_id, '_gemogen_generated', 1 );
+
 		return (int) $comment_id;
 	}
 

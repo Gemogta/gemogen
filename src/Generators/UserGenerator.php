@@ -39,6 +39,8 @@ class UserGenerator implements GeneratorInterface {
 			throw new \RuntimeException( 'Failed to create user: ' . $user_id->get_error_message() );
 		}
 
+		update_user_meta( $user_id, '_gemogen_generated', 1 );
+
 		return $user_id;
 	}
 

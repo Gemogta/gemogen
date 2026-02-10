@@ -12,9 +12,18 @@ class ScenarioManager {
 	private array $scenarios = [];
 
 	private Logger $logger;
+	private RunHistory $history;
 
-	public function __construct( Logger $logger ) {
-		$this->logger = $logger;
+	public function __construct( Logger $logger, RunHistory $history ) {
+		$this->logger  = $logger;
+		$this->history = $history;
+	}
+
+	/**
+	 * Get the run history instance.
+	 */
+	public function getHistory(): RunHistory {
+		return $this->history;
 	}
 
 	/**
@@ -94,6 +103,9 @@ class ScenarioManager {
 
 		$total = array_sum( array_map( 'count', $created_ids ) );
 		$this->logger->info( "Scenario '{$id}' completed: {$total} items created." );
+
+		// Record run in history.
+		$this->history->record( $id, $config, $created_ids );
 
 		return $created_ids;
 	}

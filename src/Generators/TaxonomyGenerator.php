@@ -36,7 +36,10 @@ class TaxonomyGenerator implements GeneratorInterface {
 			throw new \RuntimeException( 'Failed to create term: ' . $result->get_error_message() );
 		}
 
-		return (int) $result['term_id'];
+		$term_id = (int) $result['term_id'];
+		update_term_meta( $term_id, '_gemogen_generated', 1 );
+
+		return $term_id;
 	}
 
 	public function delete( int $id ): void {

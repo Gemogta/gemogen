@@ -6,6 +6,7 @@ namespace Gemogen\Tests\Unit\Core;
 
 use Gemogen\Contracts\ScenarioInterface;
 use Gemogen\Core\Logger;
+use Gemogen\Core\RunHistory;
 use Gemogen\Core\ScenarioManager;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +15,7 @@ class ScenarioManagerTest extends TestCase {
 	private ScenarioManager $manager;
 
 	protected function setUp(): void {
-		$this->manager = new ScenarioManager( new Logger() );
+		$this->manager = new ScenarioManager( new Logger(), new RunHistory() );
 	}
 
 	public function test_register_and_get(): void {

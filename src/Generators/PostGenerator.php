@@ -39,6 +39,8 @@ class PostGenerator implements GeneratorInterface {
 			throw new \RuntimeException( 'Failed to create post: ' . $post_id->get_error_message() );
 		}
 
+		update_post_meta( $post_id, '_gemogen_generated', 1 );
+
 		return $post_id;
 	}
 

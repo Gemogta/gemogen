@@ -6,6 +6,7 @@ namespace Gemogen;
 
 use Gemogen\Core\ContentPool;
 use Gemogen\Core\Logger;
+use Gemogen\Core\RunHistory;
 use Gemogen\Core\ScenarioManager;
 use Gemogen\Generators\CommentGenerator;
 use Gemogen\Generators\MediaGenerator;
@@ -64,6 +65,7 @@ class Plugin {
 	 */
 	private function register_services(): void {
 		$this->container->set( 'logger', fn() => new Logger() );
+		$this->container->set( 'run.history', fn() => new RunHistory() );
 
 		// Content sources and pool.
 		$this->container->set( 'source.builtin', fn() => new BuiltInSource() );
@@ -111,7 +113,7 @@ class Plugin {
 		$this->container->set(
 			'scenario.manager',
 			function ( Container $c ): ScenarioManager {
-				$manager = new ScenarioManager( $c->get( 'logger' ) );
+				$manager = new ScenarioManager( $c->get( 'logger' ), $c->get( 'run.history' ) );
 				$manager->register( $c->get( 'scenario.core-content' ) );
 				return $manager;
 			}

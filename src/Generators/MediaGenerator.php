@@ -60,6 +60,8 @@ class MediaGenerator implements GeneratorInterface {
 		$metadata = wp_generate_attachment_metadata( $attachment_id, $filepath );
 		wp_update_attachment_metadata( $attachment_id, $metadata );
 
+		update_post_meta( $attachment_id, '_gemogen_generated', 1 );
+
 		return $attachment_id;
 	}
 
