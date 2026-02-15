@@ -14,7 +14,7 @@
 | M4 | Extension System | Pending | — | — |
 | M5 | REST API | Done | `90f97a4` | 2026-02-15 |
 | M6 | React Admin UI (simplified) | Pending (blocked by M5) | — | — |
-| M7 | Testing & Quality | Pending (blocked by all) | — | — |
+| M7 | Testing & Quality | Done | `pending` | 2026-02-15 |
 
 ## Git History
 
@@ -82,12 +82,27 @@ ab962fa feat: scaffold Gemogen plugin (Milestone 0)
 - `tests/Unit/REST/wp-stubs.php` — Minimal WP REST class stubs for unit testing
 - `tests/Unit/REST/ScenarioControllerTest.php` — 20 tests
 
+### M7: Testing & Quality
+- `tests/Unit/Core/LoggerTest.php` — 10 tests
+- `tests/Unit/Generators/PostGeneratorTest.php` — 9 tests
+- `tests/Unit/Generators/UserGeneratorTest.php` — 8 tests
+- `tests/Unit/Generators/TaxonomyGeneratorTest.php` — 8 tests
+- `tests/Unit/Generators/CommentGeneratorTest.php` — 9 tests
+- `tests/Unit/Generators/MediaGeneratorTest.php` — 10 tests
+- `tests/Unit/Scenarios/CoreContentScenarioTest.php` — 20 tests
+- `tests/Unit/Sources/BuiltInSourceTest.php` — 16 tests
+- `tests/Unit/Sources/UserTemplateSourceTest.php` — 10 tests
+- `tests/Integration/Scenarios/CoreContentScenarioTest.php` — 13 tests (requires wp-env)
+- `tests/Integration/CLI/ScenarioCommandTest.php` — 10 tests (requires wp-env)
+- `tests/Integration/REST/ScenarioControllerTest.php` — 12 tests (requires wp-env)
+- `tests/Integration/Generators/ContentTaggingTest.php` — 21 tests (requires wp-env)
+
 ## Test Results
 
 | Suite | Tests | Assertions | Status |
 |-------|-------|-----------|--------|
-| Unit | 66 | 131 | All passing |
-| Integration | — | — | Not yet (needs wp-env) |
+| Unit | 170 | 354 | All passing |
+| Integration | 56 | — | Written, requires wp-env to run |
 
 ## Decisions Log
 
@@ -111,7 +126,6 @@ ab962fa feat: scaffold Gemogen plugin (Milestone 0)
 
 1. **M4: Extension System** — JSON scenario definitions, presets/profiles, DynamicScenario, WooCommerce scenario
 2. **M6: React Admin UI (simplified)** — Now unblocked (M5 done)
-3. **M7: Testing & Quality** — Final polish
 
 ### Tech Debt (from M5 review)
 - REST rollback does not update run history (CLI does) — behavioral inconsistency (m4)
