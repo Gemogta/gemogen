@@ -13,6 +13,7 @@ use Gemogen\Generators\MediaGenerator;
 use Gemogen\Generators\PostGenerator;
 use Gemogen\Generators\TaxonomyGenerator;
 use Gemogen\Generators\UserGenerator;
+use Gemogen\REST\ScenarioController;
 use Gemogen\Scenarios\CoreContentScenario;
 use Gemogen\Sources\BuiltInSource;
 use Gemogen\Sources\UserTemplateSource;
@@ -125,6 +126,12 @@ class Plugin {
 	 */
 	private function register_hooks(): void {
 		add_action( 'init', fn() => $this->container->get( 'scenario.manager' )->discover() );
+
+		// Register REST API routes.
+		add_action( 'rest_api_init', function (): void {
+			$controller = new ScenarioController();
+			$controller->register_routes();
+		} );
 
 		// Register WP-CLI commands.
 		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
